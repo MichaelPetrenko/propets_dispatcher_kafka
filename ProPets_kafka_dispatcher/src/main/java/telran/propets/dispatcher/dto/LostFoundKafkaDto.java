@@ -1,4 +1,4 @@
-package telran.propets.dispatcher;
+package telran.propets.dispatcher.dto;
 
 import java.util.Arrays;
 

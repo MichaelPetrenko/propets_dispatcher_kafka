@@ -1,4 +1,4 @@
-package telran.propets.dispatcher;
+package telran.propets.dispatcher.dto;
 
 public class ResponseLostFoundDto {
 	public String id;
