@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.kafka.core.KafkaResourceFactory;
 
+import telran.propets.dispatcher.dto.KafkaReqType;
 import telran.propets.dispatcher.dto.LostFoundKafkaDto;
 import telran.propets.dispatcher.service.impl.DispatcherServiceBonsaiImpl;
 
@@ -27,7 +29,19 @@ public class DispatcherService {
 		 * If (kafkaReqType==DELETE && typePost==true) => delete of found pet => DB FoundPets Elastic
 		 */
 		
-//		if(post.kafkaReqType.toString().equals("CREATE"))
+		if(post.kafkaReqType.equals(KafkaReqType.CREATE)) {
+			service.addPost(post);
+			System.out.println("--- Controller --- Post Added -------");
+		}
+		if(post.kafkaReqType.equals(KafkaReqType.UPDATE)) {
+			service.updatePost(post);
+			System.out.println("--- Controller --- Post Updated -------");
+		}
+		if(post.kafkaReqType.equals(KafkaReqType.DELETE)) {
+			service.removePost(post.id);
+			System.out.println("--- Controller --- Post Removed -------");
+		}
+		return;
 	}
 	
 }
