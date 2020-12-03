@@ -60,10 +60,10 @@ public class LostFoundKafkaDto {
 	
 	@Override
 	public String toString() {
-		return "LostFoundKafkaDto [id=" + id + ", kafkaReqType=" + kafkaReqType + ", typePost=" + typePost
+		return "id=" + id + ", kafkaReqType=" + kafkaReqType + ", typePost=" + typePost
 				+ ", userLogin=" + userLogin + ", userName=" + userName + ", avatar=" + avatar + ", datePost="
 				+ datePost + ", type=" + type + ", sex=" + sex + ", breed=" + breed + ", tags=" + Arrays.toString(tags)
-				+ ", photos=" + Arrays.toString(photos) + ", address=" + address + ", location=" + location + "]";
+				+ ", photos=" + Arrays.toString(photos) + ", address=" + address + ", location=" + location;
 	}
 
 }
