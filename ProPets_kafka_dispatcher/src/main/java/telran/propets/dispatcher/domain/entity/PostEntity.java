@@ -2,6 +2,8 @@ package telran.propets.dispatcher.domain.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import telran.propets.dispatcher.dto.Address;
 import telran.propets.dispatcher.dto.KafkaReqType;
@@ -22,6 +24,7 @@ public class PostEntity {
 	String type;
 	String sex;
 	String breed;
+	@Field(type = FieldType.Keyword)
 	String[] tags;
 	String[] photos;
 	Address address;
