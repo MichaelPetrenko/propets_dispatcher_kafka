@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.kafka.core.KafkaResourceFactory;
-
 import telran.propets.dispatcher.dto.KafkaReqType;
 import telran.propets.dispatcher.dto.LostFoundKafkaDto;
 import telran.propets.dispatcher.service.impl.DispatcherServiceBonsaiImpl;
 
+@SuppressWarnings("deprecation")
 @EnableBinding(Sink.class)
 public class DispatcherService {
 	

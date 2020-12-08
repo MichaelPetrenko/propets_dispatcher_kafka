@@ -16,5 +16,7 @@ public interface IDispatcherServiceBonsai {
 	//Inner:
 	public PostEntity getPostById(String id);
 	public PostEntity dtoToEntity(LostFoundKafkaDto dto);
+	
+	public void searchByPosts(String id);
 
 }

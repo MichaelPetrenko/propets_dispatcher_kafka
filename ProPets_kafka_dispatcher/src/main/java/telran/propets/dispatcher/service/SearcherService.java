@@ -33,7 +33,7 @@ public class SearcherService {
 		System.out.println("=========================== TYPE"+list.size());
 		list = repo.findBySex("male");
 		System.out.println("=========================== SEX"+list.size());
-		list = repo.findByTags(arr);
+//		list = repo.findByTags(arr);
 		System.out.println("=========================== TAGS"+list.size());
 		repo.findByTagUsingDeclaredQuery("color1");
 		System.out.println("=========================== ONE TAG QUERY "+list.size());
@@ -42,7 +42,21 @@ public class SearcherService {
 	}
 	
 	public void searchInFounds(PostEntity entity) {
-		System.out.println("========== Searcher service - founds ===============");
+		
+		String[] tags = entity.getTags();
+		
+		for (int i = 0; i < tags.length; i++) {
+			System.out.println(tags[i]);
+		}
+		
+		List<PostEntity> list = repo.findByTypePost(true);
+		List<PostEntity> list2 = repo.findByTypePostAndTags(true, tags);
+		System.out.println(list.toArray().length);
+//		for (int i = 0; i < list.toArray().length; i++) {
+////			System.out.println(list.toArray()[i].to);
+//		}
+		System.out.println(list2.toArray().length);
+//		System.out.println(list2.toArray().toString());
 		return;
 	}
 
