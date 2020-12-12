@@ -14,50 +14,12 @@ public class SearcherService {
 	@Autowired
 	PostRepository repo;
 	
-//	public Entity[]
-	public void searchInLosts(PostEntity entity) {
+	public List<PostEntity> searchInLostOrFounds(PostEntity entity) {
+
 		System.out.println("========== Searcher service - losts ===============");
-		//hardcode
-		String[] arr = new String[5];
-		arr[0] = "tag1";
-		arr[1] = "tag2";
-		arr[2] = "tag3";
-		arr[3] = "color1";
-		arr[4] = "color2";
+		List<PostEntity> listResult = repo.findByTypePostAndTypeAndSex(!entity.isTypePost(), entity.getType(), entity.getSex());
 		
-//		"tag1", "tag2", "tag3", "color1", "color2"
-//		List<PostEntity> list = repo.findByTypePostAndTypeAndSexAndTags(false, "dog", "male", arr);
-		List<PostEntity> list = repo.findByTypePost(false);
-		System.out.println("=========================== TYPEPOST"+list.size());
-		list = repo.findByType("dog");
-		System.out.println("=========================== TYPE"+list.size());
-		list = repo.findBySex("male");
-		System.out.println("=========================== SEX"+list.size());
-//		list = repo.findByTags(arr);
-		System.out.println("=========================== TAGS"+list.size());
-		repo.findByTagUsingDeclaredQuery("color1");
-		System.out.println("=========================== ONE TAG QUERY "+list.size());
-		
-		return;
-	}
-	
-	public void searchInFounds(PostEntity entity) {
-		
-		String[] tags = entity.getTags();
-		
-		for (int i = 0; i < tags.length; i++) {
-			System.out.println(tags[i]);
-		}
-		
-		List<PostEntity> list = repo.findByTypePost(true);
-		List<PostEntity> list2 = repo.findByTypePostAndTags(true, tags);
-		System.out.println(list.toArray().length);
-//		for (int i = 0; i < list.toArray().length; i++) {
-////			System.out.println(list.toArray()[i].to);
-//		}
-		System.out.println(list2.toArray().length);
-//		System.out.println(list2.toArray().toString());
-		return;
+		return listResult;
 	}
 
 }

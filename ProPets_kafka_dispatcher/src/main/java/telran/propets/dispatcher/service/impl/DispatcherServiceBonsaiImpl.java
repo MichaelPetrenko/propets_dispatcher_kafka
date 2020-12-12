@@ -1,5 +1,8 @@
 package telran.propets.dispatcher.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +21,22 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 
 	@Autowired
 	SearcherService searcher;
+	
+//	@Autowired
+//	EmailService email;
 
 	@Override
 	public void searchByPosts(String id) {
-//		PostEntity newEntity = dtoToEntity(dto);
 		PostEntity entity = repo.findById(id).orElse(null);
-		if (entity.isTypePost()) {
-			searcher.searchInLosts(entity);
-		} else {
-			searcher.searchInFounds(entity);
-		}
+		List<PostEntity> result = searcher.searchInLostOrFounds(entity);
+		System.out.println(convertToEmail(result));
+	}
+
+	private List<String> convertToEmail(List<PostEntity> list) {
+//		https://propetsproj.herokuapp.com/lostfound/en/v1/post/5fa5949711ffe54ec940be68
+		return list.stream()
+		.map(e->"https://propetsproj.herokuapp.com/lostfound/en/v1/post/"+e.getId())
+		.collect(Collectors.toList());
 	}
 
 	@Override
@@ -35,13 +44,11 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 	public void addPost(LostFoundKafkaDto dto) {
 		PostEntity entity = dtoToEntity(dto);
 		repo.save(entity);
-		System.out.println("======= ADDED SUCCESSFULLY ========");
+//		System.out.println("======= ADDED SUCCESSFULLY ========");
 
-		if (entity.isTypePost()) {
-			searcher.searchInLosts(entity);
-		} else {
-			searcher.searchInFounds(entity);
-		}
+		List<PostEntity> result = searcher.searchInLostOrFounds(entity);
+		System.out.println(convertToEmail(result));
+		//TODO call mail service(result);
 
 	}
 
@@ -54,10 +61,12 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 			System.out.println("===== OLD ENTITY IS NULL =======");
 			return;
 		}
-		// Warning! Maybe entity not owerrited
+		
 		repo.save(newEntity);
 		System.out.println("======= UPDATED SUCCESSFULLY ========");
-		// searcher(entity)
+		List<PostEntity> result = searcher.searchInLostOrFounds(newEntity);
+		System.out.println(convertToEmail(result));
+		//TODO call mail service(result);
 
 	}
 
