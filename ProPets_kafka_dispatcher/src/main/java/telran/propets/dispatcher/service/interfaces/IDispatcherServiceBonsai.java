@@ -4,6 +4,9 @@ import telran.propets.dispatcher.domain.entity.PostEntity;
 import telran.propets.dispatcher.dto.LostFoundKafkaDto;
 
 public interface IDispatcherServiceBonsai {
+	
+	
+	public void handlerNewPost(LostFoundKafkaDto dto);
 	//Creating post:
 	public void addPost(LostFoundKafkaDto dto);
 	

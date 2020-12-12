@@ -17,6 +17,7 @@ public class DispatcherService {
 
 	@StreamListener(Sink.INPUT)
 	public void handlePost(LostFoundKafkaDto post) {
+		//TODO clean
 		System.out.println(post.toString());
 		/**
 		 * Here we recieving post.
