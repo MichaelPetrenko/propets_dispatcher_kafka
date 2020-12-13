@@ -5,8 +5,7 @@ import telran.propets.dispatcher.dto.LostFoundKafkaDto;
 
 public interface IDispatcherServiceBonsai {
 	
-	
-	public void handlerNewPost(LostFoundKafkaDto dto);
+	public void handlerSendingEmail(LostFoundKafkaDto dto);
 	//Creating post:
 	public void addPost(LostFoundKafkaDto dto);
 	
@@ -17,7 +16,6 @@ public interface IDispatcherServiceBonsai {
 	public void removePost(String id);
 	
 	//Inner:
-	public PostEntity getPostById(String id);
 	public PostEntity dtoToEntity(LostFoundKafkaDto dto);
 	
 	public void searchByPosts(String id);

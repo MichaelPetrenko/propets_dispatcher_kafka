@@ -1,6 +1,7 @@
 package telran.propets.dispatcher.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,17 +27,14 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 
 	@Autowired
 	EmailServiceImpl email;
-
+	
 	@Override
 	@Transactional
-	public void handlerNewPost(LostFoundKafkaDto dto) {
-
-		// Adding to db
-		addPost(dto);
-
+	public void handlerSendingEmail(LostFoundKafkaDto dto) {
+		
 		// Getting from Searcher
 		List<PostEntity> result = searchByMatches(dto);
-		if(result==null || result.size()==0)
+		if(result==null)
 			return;
 
 		// Sending res to Converter
@@ -54,12 +52,14 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		post.add(relevantPost);
 		subj = "This post may be relevant to your request";
 		sendSimpleEmail(addresses, post, subj);
-
 	}
 
 	private List<PostEntity> searchByMatches(LostFoundKafkaDto dto) {
 		PostEntity entity = dtoToEntity(dto);
 		List<PostEntity> result = searcher.searchInLostOrFounds(entity);
+		if(result.size()==0) {
+			return null;
+		}
 		return result;
 	}
 
@@ -73,9 +73,9 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 	@Override
 	@Transactional
 	public void addPost(LostFoundKafkaDto dto) {
-
 		PostEntity entity = dtoToEntity(dto);
 		repo.save(entity);
+		handlerSendingEmail(dto);
 
 	}
 
@@ -85,29 +85,34 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		PostEntity newEntity = dtoToEntity(dto);
 		PostEntity oldEntity = repo.findById(dto.id).orElse(null);
 		if (oldEntity == null) {
-			System.out.println("===== OLD ENTITY IS NULL =======");
 			return;
 		}
-
 		repo.save(newEntity);
-		System.out.println("======= UPDATED SUCCESSFULLY ========");
-		List<PostEntity> result = searcher.searchInLostOrFounds(newEntity);
-		System.out.println(convertPostsToListLinks(result));
-		// TODO call mail service(result);
+		if(isExistsImportantDifference(oldEntity, newEntity)) {
+			handlerSendingEmail(dto);
+		}
+	}
 
+	private boolean isExistsImportantDifference(PostEntity oldEntity, PostEntity newEntity) {
+		//bool typePost, bool sex, str type, str[] tags
+		if(Boolean.compare(oldEntity.isTypePost(), newEntity.isTypePost())!=0) {
+			return true;
+		}
+		if(oldEntity.getSex().compareTo(newEntity.getSex())!=0) {
+			return true;
+		}
+		if(oldEntity.getBreed().compareTo(newEntity.getBreed())!=0) {
+			return true;
+		}
+		if(!Arrays.equals(oldEntity.getTags(), newEntity.getTags())) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public void removePost(String id) {
 		repo.deleteById(id);
-		System.out.println("======== DELETED ? ==========");
-
-	}
-
-	@Override
-	public PostEntity getPostById(String id) {
-		return repo.findById(id).get();
-
 	}
 
 	@Override
@@ -117,15 +122,12 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 	}
 
 	private List<String> convertPostsToListLinks(List<PostEntity> list) {
-//		https://propetsproj.herokuapp.com/lostfound/en/v1/post/5fa5949711ffe54ec940be68
-		return list.stream().map(e -> "https://propetsproj.herokuapp.com/lostfound/en/v1/post/" + e.getId())
+		return list.stream()
+				.map(e -> "https://propetsproj.herokuapp.com/lostfound/en/v1/post/" + e.getId())
 				.collect(Collectors.toList());
 	}
 	
 	private String[] convertPostsToEmailAddresses(List<PostEntity> list) {
-		if(list.size()==0) {
-			return null;
-		}
 		return list.stream()
 				.map(e -> e.getUserLogin().toString())
 				.collect(Collectors.toList())

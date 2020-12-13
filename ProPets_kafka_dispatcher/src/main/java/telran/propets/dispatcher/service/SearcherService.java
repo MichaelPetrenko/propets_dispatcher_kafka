@@ -16,7 +16,6 @@ public class SearcherService {
 	
 	public List<PostEntity> searchInLostOrFounds(PostEntity entity) {
 
-		System.out.println("========== Searcher service - losts ===============");
 		List<PostEntity> listResult = repo.findByTypePostAndTypeAndSex(!entity.isTypePost(), entity.getType(), entity.getSex());
 		
 		return listResult;

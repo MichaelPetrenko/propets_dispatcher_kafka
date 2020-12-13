@@ -30,7 +30,7 @@ public class DispatcherService {
 		 */
 		
 		if(post.kafkaReqType.equals(KafkaReqType.CREATE)) {
-			service.handlerNewPost(post);
+			service.addPost(post);
 			System.out.println("--- Controller --- Post Added -------");
 		}
 		if(post.kafkaReqType.equals(KafkaReqType.UPDATE)) {
