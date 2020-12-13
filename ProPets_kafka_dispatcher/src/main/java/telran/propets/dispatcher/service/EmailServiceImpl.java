@@ -22,7 +22,7 @@ public class EmailServiceImpl implements IEmailService {
 		msg.setText(text);
 		for(int i=0 ; i < to.length; i++) {
 			msg.setTo(to[i]);
-			mailSender.send(msg);// JavaMailSender
+			mailSender.send(msg);
 		}
 	}
 

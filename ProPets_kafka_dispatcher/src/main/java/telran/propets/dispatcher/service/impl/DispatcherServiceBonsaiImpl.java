@@ -98,10 +98,10 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		if(Boolean.compare(oldEntity.isTypePost(), newEntity.isTypePost())!=0) {
 			return true;
 		}
-		if(oldEntity.getSex().compareTo(newEntity.getSex())!=0) {
+		if(!oldEntity.getSex().equals(newEntity.getSex())) {
 			return true;
 		}
-		if(oldEntity.getBreed().compareTo(newEntity.getBreed())!=0) {
+		if(!oldEntity.getBreed().equals(newEntity.getBreed())) {
 			return true;
 		}
 		if(!Arrays.equals(oldEntity.getTags(), newEntity.getTags())) {
