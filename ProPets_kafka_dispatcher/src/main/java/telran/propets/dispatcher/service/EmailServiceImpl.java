@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import telran.propets.dispatcher.service.interfaces.IEmailService;
 
 @Service
-public class EmailService implements IEmailService{
+public class EmailServiceImpl implements IEmailService{
 	
 	@Autowired
 	JavaMailSender mailSender;
@@ -26,4 +26,5 @@ public class EmailService implements IEmailService{
 		mailSender.send(msg);//JavaMailSender
 		
 	}
+	
 }

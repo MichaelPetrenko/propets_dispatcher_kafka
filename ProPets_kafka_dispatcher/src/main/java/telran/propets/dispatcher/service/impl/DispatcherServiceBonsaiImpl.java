@@ -1,5 +1,6 @@
 package telran.propets.dispatcher.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import telran.propets.dispatcher.domain.dao.PostRepository;
 import telran.propets.dispatcher.domain.entity.PostEntity;
 import telran.propets.dispatcher.dto.LostFoundKafkaDto;
-import telran.propets.dispatcher.service.EmailService;
+import telran.propets.dispatcher.service.EmailServiceImpl;
 import telran.propets.dispatcher.service.SearcherService;
 import telran.propets.dispatcher.service.interfaces.IDispatcherServiceBonsai;
 
@@ -24,24 +25,35 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 	SearcherService searcher;
 
 	@Autowired
-	EmailService email;
+	EmailServiceImpl email;
 
 	@Override
 	@Transactional
 	public void handlerNewPost(LostFoundKafkaDto dto) {
 
-		// add to db
+		// Adding to db
 		addPost(dto);
 
-		// get from Searcher
+		// Getting from Searcher
 		List<PostEntity> result = searchByMatches(dto);
+		if(result==null || result.size()==0)
+			return;
 
-		// send res to Converter
-		List<String> afterConvert = convertToEmail(result);
+		// Sending res to Converter
+		List<String> afterConvert = convertPostsToListLinks(result);
 
-		// send converted to emailNotifyer
-		String[] respondents = { dto.userLogin };
-		email.sendSimpleMessage(respondents, "ALLO SOBAKY NASHLI", afterConvert.toString());
+		// Sending converted to emailNotifyer
+		String[] respondents = {dto.userLogin};
+		String subj = "These posts may be relevant to your request";
+		sendSimpleEmail(respondents, afterConvert, subj);
+		
+		// Sending emails to relevant persons
+		String[] addresses = convertPostsToEmailAddresses(result);
+		String relevantPost = "https://propetsproj.herokuapp.com/lostfound/en/v1/post/"+dto.id;
+		List<String> post = new ArrayList<String>();
+		post.add(relevantPost);
+		subj = "This post may be relevant to your request";
+		sendSimpleEmail(addresses, post, subj);
 
 	}
 
@@ -55,7 +67,7 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 	public void searchByPosts(String id) {
 		PostEntity entity = repo.findById(id).orElse(null);
 		List<PostEntity> result = searcher.searchInLostOrFounds(entity);
-		System.out.println(convertToEmail(result));
+		System.out.println(convertPostsToListLinks(result));
 	}
 
 	@Override
@@ -80,7 +92,7 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		repo.save(newEntity);
 		System.out.println("======= UPDATED SUCCESSFULLY ========");
 		List<PostEntity> result = searcher.searchInLostOrFounds(newEntity);
-		System.out.println(convertToEmail(result));
+		System.out.println(convertPostsToListLinks(result));
 		// TODO call mail service(result);
 
 	}
@@ -104,10 +116,26 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		return entity;
 	}
 
-	private List<String> convertToEmail(List<PostEntity> list) {
+	private List<String> convertPostsToListLinks(List<PostEntity> list) {
 //		https://propetsproj.herokuapp.com/lostfound/en/v1/post/5fa5949711ffe54ec940be68
 		return list.stream().map(e -> "https://propetsproj.herokuapp.com/lostfound/en/v1/post/" + e.getId())
 				.collect(Collectors.toList());
+	}
+	
+	private String[] convertPostsToEmailAddresses(List<PostEntity> list) {
+		if(list.size()==0) {
+			return null;
+		}
+		return list.stream()
+				.map(e -> e.getUserLogin().toString())
+				.collect(Collectors.toList())
+				.toArray(new String[list.size()]);	
+	}
+	
+	private void sendSimpleEmail(String[] respondents, List<String> links, String subj) {
+		if(links.size()>0) {
+			email.sendSimpleMessage(respondents, subj, links.toString());
+		}
 	}
 
 }
