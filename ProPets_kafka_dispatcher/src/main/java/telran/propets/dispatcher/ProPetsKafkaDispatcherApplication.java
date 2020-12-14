@@ -8,13 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ProPetsKafkaDispatcherApplication {
 	
-	private static Logger logger = LogManager.getLogger("logspropets");
+	private static Logger logger = LogManager.getLogger(ProPetsKafkaDispatcherApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProPetsKafkaDispatcherApplication.class, args);
 		
-        logger.debug("Debug log message");
-        logger.info("Info log message");
+//        logger.debug("Debug log message");
+//        logger.info("Info log message");
         logger.error("Error log message");
         
 	}
