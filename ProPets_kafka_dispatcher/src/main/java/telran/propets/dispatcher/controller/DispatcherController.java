@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DispatcherController {
 	
-	@GetMapping(value = "/dispatcher/wakeup")
+	@GetMapping(value = "/wakeup")
 	void wakeUp() {
 		return;
 	}
