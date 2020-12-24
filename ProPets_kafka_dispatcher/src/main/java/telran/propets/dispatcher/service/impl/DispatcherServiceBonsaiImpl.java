@@ -45,7 +45,8 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		// Sending converted to emailNotifyer
 		String[] respondents = {dto.userLogin};
 		String subj = "These posts may be relevant to your request";
-		sendSimpleEmail(respondents, afterConvert, subj);
+//		sendSimpleEmail(respondents, afterConvert, subj);
+		sendMimeEmail(respondents, afterConvert, subj);
 		
 		// Sending emails to relevant persons
 		String[] addresses = convertPostsToEmailAddresses(result);
