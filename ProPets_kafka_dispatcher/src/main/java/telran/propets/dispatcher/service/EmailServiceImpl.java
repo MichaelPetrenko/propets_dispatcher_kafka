@@ -40,9 +40,17 @@ public class EmailServiceImpl implements IEmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
 
 		// message.setFrom(from);
-		String htmlMsg = "<h3>"+text+"</h3>"
-				+ "<a href=\"https://imgbb.com/\"><img src=\"https://i.ibb.co/Kh4B3fW/picturemessage-1qpuujtb-n02.png\" "
-				+ "alt=\"picturemessage-1qpuujtb-n02\" border=\"0\" /></a>";
+//		String htmlMsg = "<h3>"+text+"</h3>"
+//				+ "<a href=\"https://imgbb.com/\"><img src=\"https://i.ibb.co/Kh4B3fW/picturemessage-1qpuujtb-n02.png\" "
+//				+ "alt=\"picturemessage-1qpuujtb-n02\" border=\"0\" /></a>";
+		
+		StringBuilder sb = new StringBuilder();
+		String[] arrText = text.substring(1,text.length()-1).split(", ");
+		for(int i=0 ; i<arrText.length ; i++) {
+			sb.append("<h3>"+arrText[i]+"</h3>");
+		}
+		sb.append("<a href=\"https://imgbb.com/\"><img src=\"https://i.ibb.co/Kh4B3fW/picturemessage-1qpuujtb-n02.png\" alt=\"picturemessage-1qpuujtb-n02\" border=\"0\" /></a>");
+		String htmlMsg = sb.toString();
 		
 		for (int j = 0; j < to.length; j++) {
 			message.setContent(htmlMsg, "text/html");
