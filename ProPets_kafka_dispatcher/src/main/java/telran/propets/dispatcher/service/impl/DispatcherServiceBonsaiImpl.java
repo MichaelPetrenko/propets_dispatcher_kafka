@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +53,9 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		List<String> post = new ArrayList<String>();
 		post.add(relevantPost);
 		subj = "This post may be relevant to your request";
-		sendSimpleEmail(addresses, post, subj);
+//		sendSimpleEmail(addresses, post, subj);
+		sendMimeEmail(addresses, post, subj);
+		
 	}
 
 	private List<PostEntity> searchByMatches(LostFoundKafkaDto dto) {
@@ -138,6 +142,18 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 		if(links.size()>0) {
 			email.sendSimpleMessage(respondents, subj, links.toString());
 		}
+	}
+	
+	private void sendMimeEmail(String[] respondents, List<String> links, String subj) {
+		if(links.size()>0) {
+//			(respondents, subj, links.toString());
+			try {
+				email.sendMimeMessage(respondents, subj, links.toString());
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }
