@@ -139,6 +139,7 @@ public class DispatcherServiceBonsaiImpl implements IDispatcherServiceBonsai {
 				.toArray(new String[list.size()]);	
 	}
 	
+	@SuppressWarnings("unused")
 	private void sendSimpleEmail(String[] respondents, List<String> links, String subj) {
 		if(links.size()>0) {
 			email.sendSimpleMessage(respondents, subj, links.toString());
