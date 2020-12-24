@@ -40,7 +40,7 @@ public class EmailServiceImpl implements IEmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
 
 		// message.setFrom(from);
-		String htmlMsg = "<h3>"+subject+"</h3>"
+		String htmlMsg = "<h3>"+text+"</h3>"
 				+ "<a href=\"https://imgbb.com/\"><img src=\"https://i.ibb.co/Kh4B3fW/picturemessage-1qpuujtb-n02.png\" "
 				+ "alt=\"picturemessage-1qpuujtb-n02\" border=\"0\" /></a>";
 		
